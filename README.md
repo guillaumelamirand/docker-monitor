@@ -1,6 +1,6 @@
-# Custom components for Home Assistant
+# Home Assistant integration to monitor docker containers
 
-[![maintainer](https://img.shields.io/badge/maintainer-Sander%20Huisman%20-blue.svg?style=for-the-badge)](https://github.com/Sanderhuisman)
+[![maintainer](https://img.shields.io/badge/maintainer-Sander%20Huisman%20-blue.svg?style=for-the-badge)](https://github.com/guillaumelamirand)
 
 ## About
 
