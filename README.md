@@ -1,18 +1,12 @@
-# Custom components for Home Assistant
+# Home Assistant integration to monitor docker containers
 
-[![maintainer](https://img.shields.io/badge/maintainer-Sander%20Huisman%20-blue.svg?style=for-the-badge)](https://github.com/Sanderhuisman)
+[![maintainer](https://img.shields.io/badge/maintainer-Sander%20Huisman%20-blue.svg?style=for-the-badge)](https://github.com/guillaumelamirand)
 
 ## About
 
 This repository contains custom components I developed for my own [Home-Assistant](https://www.home-assistant.io) setup. Feel free to use the components and report bugs if you find them. If you want to contribute, please report a bug or pull request and I will reply as soon as possible. Please star & watch my project such I can see how many people like my components and for you to stay in the loop as updates come along.
 
-## Components
-
-* [Docker Monitor](#docker_monitor)
-* [Eetlijst sensor](#eetlijst)
-* [Luftdaten](#luftdaten)
-
-### Docker Monitor <a name="docker_monitor"></a>
+### Docker Monitor
 
 The Docker monitor allows you to monitor statistics and turn on/off containers. The monitor can connected to a daemon through the url parameter. When home assistant is used within a Docker container, the daemon can be mounted as follows `-v /var/run/docker.sock:/var/run/docker.sock`. The monitor is based on [Glances](https://github.com/nicolargo/glances) and [ha-dockermon](https://github.com/philhawthorne/ha-dockermon) and combines (in my opinion the best of both integrated in HA :)).
 
@@ -30,6 +24,13 @@ The event will contain the following data:
 * `Image`: Container image
 * `Status`: Container satus
 * `Id`: Container ID (long)
+
+#### Installation with HACS
+[HACS](https://github.com/custom-components/hacs) is a custom integration that allows you to search for, discover, install, and manage custom additions to Home Assistant.
+
+1. In the HACS store select the **Settings** tab.
+2. Enter `guillaumelamirand/docker-monitor` in the **Add Custom Repository** box and select **Integration** from the **Category** list.
+3. On the **Integrations** tab search for "Docker Monitor" and follow the links to install.
 
 #### Configuration
 
@@ -75,74 +76,9 @@ docker_monitor:
 | container_network_total_up        | Network total upstream          | MB    |
 | container_network_total_down      | Network total downstream        | MB    |
 
-### Eetlijst Sensor <a name="eetlijst"></a>
-
-An Eetlijst sensor to monitor the eat/cook status of your student home.
-
-#### Configuration
-
-To use `eetlijst` in your installation, add the following to your `configuration.yaml` file:
-
-```yaml
-# Example configuration.yaml entry
-sensor:
-  - platform: eetlijst
-    username: !secret eetlijst_username
-    password: !secret eetlijst_password
-```
-
-##### Configuration variables
-
-| Parameter             | Type                    | Description   |
-| --------------------- | ----------------------- | ------------- |
-| username              | string       (Required) | Username      |
-| password              | string       (Required) | Password      |
-
-### Lufdaten Sensor <a name="luftdaten"></a>
-
-A custom Luftdaten sensor to monitor polution of a station.
-
-#### Configuration
-
-To use `luftdaten_cu` in your installation, add the following to your `configuration.yaml` file:
-
-```yaml
-# Example configuration.yaml entry
-sensor:
-  - platform: luftdaten_cu
-    sensorid: 15307
-    monitored_conditions:
-      - P1
-      - P2
-```
-
-##### Configuration variables
-
-| Parameter             | Type                    | Description                                                     |
-| --------------------- | ----------------------- | --------------------------------------------------------------- |
-| sensorid              | int          (Required) | Sensor id of the lufdaten sensor to be monitored.               |
-| monitored_conditions  | list         (Optional) | Array of conditions to be monitored. Defaults to all conditions |
-
-| Condition                         | Description           | Unit  |
-| --------------------------------- | --------------------- | ----- |
-| temperature                       | Temperature           | °C    |
-| humidity                          | Container status      | %     |
-| pressure                          | Air pressure          | Pa    |
-| P1                                | PM10                  | µg/m3 |
-| P2                                | PM2.5                 | µg/m3 |
-
-## Track Updates
-This custom component can be tracked with the help of [custom-lovelace](https://github.com/ciotlosm/custom-lovelace) cards with the [custom_updater](https://github.com/custom-cards/tracker-card) card.
-
-In your configuration.yaml
-
-```yaml
-custom_updater:
- component_urls:
-   - 'https://raw.githubusercontent.com/Sanderhuisman/home-assistant-custom-components/master/custom_updater.json'
-```
-
 ## Credits
 
+* [Sanderhuisman](https://https://github.com/Sanderhuisman/home-assistant-custom-components)
+* [brianhanifin](https://https://github.com/brianhanifin/docker-monitor)
 * [frenck](https://github.com/frenck/home-assistant-config)
 * [robmarkcole](https://github.com/robmarkcole/Hue-sensors-HASS)
