@@ -1,20 +1,17 @@
-# Home Assistant integration to monitor docker containers
-![Project Maintenance][maintenance-shield]
-
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
+
+![Project Maintenance][maintenance-shield]
 
 [![hacs][hacs-shield]](hacs)
 [![Community Forum][forum-shield]][forum]
 
 # Docker Monitor
 
-The Docker monitor allows you to monitor statistics and turn on/off containers. The monitor can connected to a daemon through the url parameter. When home assistant is used within a Docker container, the daemon can be mounted as follows `-v /var/run/docker.sock:/var/run/docker.sock`. The monitor is based on [Glances](https://github.com/nicolargo/glances) and [ha-dockermon](https://github.com/philhawthorne/ha-dockermon) and combines (in my opinion the best of both integrated in HA :)).
+The Docker monitor allows you to monitor statistics about containers. The monitor can connected to a daemon through the url parameter. When home assistant is used within a Docker container, the daemon can be mounted as follows `-v /var/run/docker.sock:/var/run/docker.sock`.
 
-Configuration information can be found in the [documentation](https://github.com/guillaumelamirand/docker-monitor).
-
-#### Configuration
+## Configuration
 
 To use the `docker_monitor` in your installation, add the following to your `configuration.yaml` file:
 
@@ -33,7 +30,7 @@ docker_monitor:
     - container_cpu_percentage_usage
 ```
 
-##### Configuration variables
+## Variables
 
 | Parameter            | Type                     | Description                                                           |
 | -------------------- | ------------------------ | --------------------------------------------------------------------- |
@@ -43,24 +40,18 @@ docker_monitor:
 | containers           | list         (Optional)  | Array of containers to monitor. Defaults to all containers.           |
 | monitored_conditions | list         (Optional)  | Array of conditions to be monitored. Defaults to all conditions       |
 
-| Condition                         | Description                     | Unit    |
+| Monitored conditions              | Description                     | Unit    |
 | --------------------------------- | ------------------------------- | ------- |
 | docker_version                    | Docker version                  | -       |
 | container_status                  | Container status                | -       |
 | container_uptime                  | Container up time               | minutes |
 | container_cpu_percentage_usage    | CPU usage                       | %       |
-| container_memory_usage            | Memory usage                    | MB      |
+| container_memory_usage            | Memory usage                    | MiB     |
 | container_memory_percentage_usage | Memory usage                    | %       |
 | container_network_speed_up        | Network total speed upstream    | kB/s    |
 | container_network_speed_down      | Network total speed downstream  | kB/s    |
 | container_network_total_up        | Network total upstream          | MB      |
 | container_network_total_down      | Network total downstream        | MB      |
-
-
-## Thanks
-
-Special thanks to [Sanderhuisman](https://github.com/Sanderhuisman/home-assistant-custom-components) for the original component.
-
 ***
 
 [docker-monitor]: https://github.com/guillaumelamirand/docker-monitor

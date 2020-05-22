@@ -1,12 +1,13 @@
-# Home Assistant integration to monitor docker containers
+# Docker Monitor
 ![Project Maintenance][maintenance-shield]
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
 
-[![hacs][hacs-shield]](hacs)
-[![Community Forum][forum-shield]][forum]
+[![hacs][hacs-shield]](hacs) [![Community Forum][forum-shield]][forum]
+
+_Integration to monitor docker containers._
 
 ## About
 
@@ -14,27 +15,20 @@ This repository contains custom components I developed for my own [Home-Assistan
 
 This component is based on the work done by [Sanderhuisman](https://https://github.com/Sanderhuisman/home-assistant-custom-components).
 
-### Docker Monitor
+## How it works
 
-The Docker monitor allows you to monitor statistics and turn on/off containers. The monitor can connected to a daemon through the url parameter. When home assistant is used within a Docker container, the daemon can be mounted as follows `-v /var/run/docker.sock:/var/run/docker.sock:ro`. The monitor is based on [Glances](https://github.com/nicolargo/glances) and [ha-dockermon](https://github.com/philhawthorne/ha-dockermon).
+The Docker monitor allows you to monitor statistics containers. The monitor can connected to a daemon through the url parameter. When home assistant is used within a Docker container, the daemon can be mounted as follows `-v /var/run/docker.sock:/var/run/docker.sock:ro`. The monitor is based on [Glances](https://github.com/nicolargo/glances) and [ha-dockermon](https://github.com/philhawthorne/ha-dockermon).
 
 **Important note: as the loading path of platforms have been changed in issue [#20807](https://github.com/home-assistant/home-assistant/pull/20807), the current version requires HA versions 0.88 and above. For older versions, use version [0.0.1](https://github.com/Sanderhuisman/home-assistant-custom-components/releases/tag/0.0.1).**
 
-#### Installation with HACS
+## Installation with HACS
 [HACS](https://github.com/custom-components/hacs) is a custom integration that allows you to search for, discover, install, and manage custom additions to Home Assistant.
 
 1. In the HACS store select the **Settings** tab.
 2. Enter `guillaumelamirand/docker-monitor` in the **Add Custom Repository** box and select **Integration** from the **Category** list.
 3. On the **Integrations** tab search for "Docker Monitor" and follow the links to install.
 
-#### Installation with HACS
-[HACS](https://github.com/custom-components/hacs) is a custom integration that allows you to search for, discover, install, and manage custom additions to Home Assistant.
-
-1. In the HACS store select the **Settings** tab.
-2. Enter `guillaumelamirand/docker-monitor` in the **Add Custom Repository** box and select **Integration** from the **Category** list.
-3. On the **Integrations** tab search for "Docker Monitor" and follow the links to install.
-
-#### Configuration
+## Configuration
 
 To use the `docker_monitor` in your installation, add the following to your `configuration.yaml` file:
 
@@ -53,7 +47,7 @@ docker_monitor:
     - container_cpu_percentage_usage
 ```
 
-##### Configuration variables
+### Variables
 
 | Parameter            | Type                     | Description                                                           |
 | -------------------- | ------------------------ | --------------------------------------------------------------------- |
