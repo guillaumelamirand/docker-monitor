@@ -15,16 +15,12 @@ ICON = "mdi:docker"
 
 # Platforms
 SENSOR = "sensor"
-SWITCH = "switch"
-#PLATFORMS = [SENSOR, SWITCH]
 PLATFORMS = [SENSOR]
 DATA_DOCKER_API = 'docker_api'
 DATA_CONFIG = 'config'
 
 # Configuration and options
-CONF_EVENTS = 'events'
 CONF_CONTAINERS = 'containers'
-ROUND_PRECISION = 2
 
 # Defaults
 DEFAULT_NAME = DOMAIN
@@ -34,7 +30,7 @@ DEFAULT_SCAN_INTERVAL = timedelta(seconds=10)
 DOCKER_MONITOR_VERSION = 'docker_version'
 
 DOCKER_MONITORED_CONDITIONS = {
-    DOCKER_MONITOR_VERSION: ['Version', None, 'mdi:information-outline', None],
+   DOCKER_MONITOR_VERSION: ['Version', None, 'mdi:information-outline', None],
 }
 
 CONTAINER_MONITOR_STATUS = 'container_status'
@@ -48,12 +44,11 @@ CONTAINER_MONITOR_NETWORK_SPEED_DOWN = 'container_network_speed_down'
 CONTAINER_MONITOR_NETWORK_TOTAL_UP = 'container_network_total_up'
 CONTAINER_MONITOR_NETWORK_TOTAL_DOWN = 'container_network_total_down'
 CONTAINER_MONITORED_CONDITIONS = {
-    DOCKER_MONITOR_VERSION: ['Docker Version', None, 'mdi:information-outline', None],
     CONTAINER_MONITOR_STATUS: ['Status', None, 'mdi:checkbox-marked-circle-outline', None],
-    CONTAINER_MONITOR_UPTIME: ['Up Time', '', 'mdi:clock', 'timestamp'],
+    CONTAINER_MONITOR_UPTIME: ['Up Time', 'minutes', 'mdi:clock', 'timestamp'],
     CONTAINER_MONITOR_IMAGE: ['Image', None, 'mdi:information-outline', None],
     CONTAINER_MONITOR_CPU_PERCENTAGE: ['CPU use', '%', 'mdi:chip', None],
-    CONTAINER_MONITOR_MEMORY_USAGE: ['Memory use', 'MB', 'mdi:memory', None],
+    CONTAINER_MONITOR_MEMORY_USAGE: ['Memory use', 'MiB', 'mdi:memory', None],
     CONTAINER_MONITOR_MEMORY_PERCENTAGE: ['Memory use (percent)', '%', 'mdi:memory', None],
     CONTAINER_MONITOR_NETWORK_SPEED_UP: ['Network speed Up', 'kB/s', 'mdi:upload', None],
     CONTAINER_MONITOR_NETWORK_SPEED_DOWN: ['Network speed Down', 'kB/s', 'mdi:download', None],

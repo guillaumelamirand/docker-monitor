@@ -30,9 +30,7 @@ from custom_components.docker_monitor.const import (
     DEFAULT_URL,
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_MONITORED_CONDITIONS,
-    CONF_EVENTS,
-    CONF_CONTAINERS,
-    ROUND_PRECISION
+    CONF_CONTAINERS
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -45,8 +43,6 @@ CONFIG_SCHEMA = vol.Schema({
             cv.string,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL):
             cv.time_period,
-        vol.Optional(CONF_EVENTS, default=False):
-            cv.boolean,
         vol.Optional(CONF_MONITORED_CONDITIONS, default=DEFAULT_MONITORED_CONDITIONS):
             vol.All(cv.ensure_list, [vol.In(DEFAULT_MONITORED_CONDITIONS)]),
         vol.Optional(CONF_CONTAINERS):
@@ -110,20 +106,20 @@ class DockerAPI:
             self._containers[container.name] = DockerContainerAPI(self._hass, self._client, container.name)
 
     def get_info(self):
-        version = {}
+        info = {}
         try:
-            raw_stats = self._client.version()
-            version = {
-                'version': raw_stats.get('Version', None),
-                'api_version': raw_stats.get('ApiVersion', None),
-                'os': raw_stats.get('Os', None),
-                'arch': raw_stats.get('Arch', None),
-                'kernel': raw_stats.get('KernelVersion', None),
+            raw = self._client.version()
+            info = {
+                'version': raw.get('Version', None),
+                'api_version': raw.get('ApiVersion', None),
+                'os': raw.get('Os', None),
+                'arch': raw.get('Arch', None),
+                'kernel_version': raw.get('KernelVersion', None),
             }
         except Exception as e:
             _LOGGER.error("Cannot get Docker version ({})".format(e))
 
-        return version
+        return info
 
     def get_containers(self):
         return list(self._containers.values())
@@ -140,7 +136,6 @@ class DockerContainerAPI:
         self._hass = hass
         self._name = name
         self._container = client.containers.get(self._name)
-        self._previous_cpu = None
         self._previous_network = None
 
     @property
@@ -148,98 +143,19 @@ class DockerContainerAPI:
         return self._name
 
     def get_stats(self):
-
+        
         _LOGGER.debug("Get stats for container {} ({})".format(self._name, self._container.id))
         raw = self._container.stats(stream=False)
+
         stats = {}
-        _LOGGER.debug("Loading info for container {}".format(self._name))
         stats['info'] = self._get_info()
 
         if stats['info']['status'] in ('running', 'paused'):
             _LOGGER.debug("Container {} is running".format(self._name))
             stats['read'] = parser.parse(raw['read'])
-
-            _LOGGER.debug("Loading cpu stats for container {}".format(self._name))
-            cpu_stats = {}
-            try:
-                cpu_new = {}
-                cpu_new['total'] = raw['cpu_stats']['cpu_usage']['total_usage']
-                cpu_new['system'] = raw['cpu_stats']['system_cpu_usage']
-
-                # Compatibility wih older Docker API
-                if 'online_cpus' in raw['cpu_stats']:
-                    cpu_stats['online_cpus'] = raw['cpu_stats']['online_cpus']
-                else:
-                    cpu_stats['online_cpus'] = len(
-                        raw['cpu_stats']['cpu_usage']['percpu_usage'] or [])
-            except KeyError as e:
-                # raw do not have CPU information
-                _LOGGER.debug("Cannot grab CPU usage for container {} ({})".format(
-                    self._container.id, e))
-                _LOGGER.debug(raw)
-            else:
-                if self._previous_cpu:
-                    cpu_delta = float(cpu_new['total'] - self._previous_cpu['total'])
-                    system_delta = float(
-                        cpu_new['system'] - self._previous_cpu['system'])
-
-                    cpu_stats['total'] = round(0.0, ROUND_PRECISION)
-                    if cpu_delta > 0.0 and system_delta > 0.0:
-                        cpu_stats['total'] = round(
-                            (cpu_delta / system_delta) * float(cpu_stats['online_cpus']) * 100.0, ROUND_PRECISION)
-
-                self._previous_cpu = cpu_new
-
-            _LOGGER.debug("Loading memory stats for container {}".format(self._name))
-            memory_stats = {}
-            try:
-                memory_stats['usage'] = raw['memory_stats']['usage']
-                memory_stats['limit'] = raw['memory_stats']['limit']
-                memory_stats['max_usage'] = raw['memory_stats']['max_usage']
-            except (KeyError, TypeError) as e:
-                # raw_stats do not have MEM information
-                _LOGGER.debug("Cannot grab MEM usage for container {} ({})".format(
-                    self._container.id, e))
-                _LOGGER.debug(raw)
-            else:
-                memory_stats['usage_percent'] = round(
-                    float(memory_stats['usage']) / float(memory_stats['limit']) * 100.0, ROUND_PRECISION)
-
-            _LOGGER.debug("Loading network stats for container {}".format(self._name))
-            network_stats = {}
-            try:
-                network_new = {}
-                network_stats['total_tx'] = 0
-                network_stats['total_rx'] = 0
-                for if_name, data in raw["networks"].items():
-                    network_stats['total_tx'] += data["tx_bytes"]
-                    network_stats['total_rx'] += data["rx_bytes"]
-
-                network_new = {
-                    'read': stats['read'],
-                    'total_tx': network_stats['total_tx'],
-                    'total_rx': network_stats['total_rx'],
-                }
-            except KeyError as e:
-                # raw_stats do not have NETWORK information
-                _LOGGER.debug("Cannot grab NET usage for container {} ({})".format(
-                    self._container.id, e))
-                _LOGGER.debug(raw)
-            else:
-                if self._previous_network:
-                    tx = network_new['total_tx'] - self._previous_network['total_tx']
-                    rx = network_new['total_rx'] - self._previous_network['total_rx']
-                    tim = (network_new['read'] - self._previous_network['read']).total_seconds()
-
-                    if tim > 0:
-                        network_stats['speed_tx'] = round(float(tx) / tim, ROUND_PRECISION)
-                        network_stats['speed_rx'] = round(float(rx) / tim, ROUND_PRECISION)
-
-                self._previous_network = network_new
-
-            stats['cpu'] = cpu_stats
-            stats['memory'] = memory_stats
-            stats['network'] = network_stats
+            stats['cpu'] = self._get_cpu_stats(raw)
+            stats['memory'] = self._get_memory_stats(raw)
+            stats['network'] = self._get_network_stats(raw, stats['read'])
         else:
             _LOGGER.debug("Container {} is not running".format(self._name))
             stats['cpu'] = {}
@@ -250,12 +166,93 @@ class DockerContainerAPI:
         return stats
 
     def _get_info(self):
+        _LOGGER.debug("Loading info for container {}".format(self._name))
         self._container.reload()
         info = {
             'id': self._container.id,
             'image': self._container.image.tags,
             'status': self._container.attrs['State']['Status'],
             'created': parser.parse(self._container.attrs['Created']),
-            'started': parser.parse(self._container.attrs['State']['StartedAt']),
+            'started_at': parser.parse(self._container.attrs['State']['StartedAt']),
+            'finished_at': parser.parse(self._container.attrs['State']['FinishedAt']),
+            'exit_code': self._container.attrs['State']['ExitCode'],
         }
-        return info       
+        return info    
+
+    def _get_cpu_stats(self, raw):
+        _LOGGER.debug("Loading cpu stats for container {}".format(self._name))
+        cpu_stats = {}
+        try:
+            # Compatibility wih older Docker API
+            if 'online_cpus' in raw['cpu_stats']:
+                cpu_count = raw['cpu_stats']['online_cpus']
+            else:
+                cpu_count = len(
+                    raw['cpu_stats']['cpu_usage']['percpu_usage'] or [])
+
+            cpu_percent = 0.0
+            cpu_delta = float(raw["cpu_stats"]["cpu_usage"]["total_usage"]) - float(raw["precpu_stats"]["cpu_usage"]["total_usage"])
+            system_delta = float(raw["cpu_stats"]["system_cpu_usage"]) - float(raw["precpu_stats"]["system_cpu_usage"])
+            if system_delta > 0.0:
+                cpu_percent = cpu_delta / system_delta * 100.0 * cpu_count
+            cpu_stats['total'] = round(cpu_percent, 2)
+            cpu_stats['online_cpus'] = cpu_count
+
+        except KeyError as e:
+            # raw do not have CPU information
+            _LOGGER.debug("Cannot grab CPU usage for container {} ({})".format(
+                self._container.id, e))
+            _LOGGER.debug(raw) 
+        return cpu_stats
+    
+    def _get_memory_stats(self, raw):
+        _LOGGER.debug("Loading memory stats for container {}".format(self._name))
+        memory_stats = {}
+        try:
+            memory_stats['usage'] = raw['memory_stats']['usage']
+            memory_stats['limit'] = raw['memory_stats']['limit']
+            memory_stats['max_usage'] = raw['memory_stats']['max_usage']
+        except (KeyError, TypeError) as e:
+            # raw_stats do not have MEM information
+            _LOGGER.debug("Cannot grab MEM usage for container {} ({})".format(
+                self._container.id, e))
+            _LOGGER.debug(raw)
+        else:
+            memory_stats['usage_percent'] = round(
+                float(memory_stats['usage']) / float(memory_stats['limit']) * 100.0, 2)
+        return memory_stats
+
+    def _get_network_stats(self, raw, read_at):
+        _LOGGER.debug("Loading network stats for container {}".format(self._name))
+        network_stats = {}
+        network_stats['total_tx'] = 0
+        network_stats['total_rx'] = 0
+        network_stats['speed_tx'] = 0
+        network_stats['speed_rx'] = 0
+        try:
+            for if_name, data in raw["networks"].items():
+                network_stats['total_tx'] += data["tx_bytes"]
+                network_stats['total_rx'] += data["rx_bytes"]
+
+            network_new = {
+                'read': read_at,
+                'total_tx': network_stats['total_tx'],
+                'total_rx': network_stats['total_rx'],
+            }
+        except KeyError as e:
+            # raw_stats do not have NETWORK information
+            _LOGGER.debug("Cannot grab NET usage for container {} ({})".format(
+                self._container.id, e))
+            _LOGGER.debug(raw)
+        else:
+            if self._previous_network:
+                tx = network_new['total_tx'] - self._previous_network['total_tx']
+                rx = network_new['total_rx'] - self._previous_network['total_rx']
+                tim = (network_new['read'] - self._previous_network['read']).total_seconds()
+
+                if tim > 0:
+                    network_stats['speed_tx'] = round(float(tx) / tim, 2)
+                    network_stats['speed_rx'] = round(float(rx) / tim, 2)
+
+            self._previous_network = network_new
+        return network_stats
