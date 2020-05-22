@@ -135,7 +135,8 @@ class DockerContainerAPI:
     def __init__(self, hass, client, name):
         self._hass = hass
         self._name = name
-        self._container = client.containers.get(self._name)
+        self._client = client
+        self._container = self._client.containers.get(self._name)
         self._previous_network = None
 
     @property
@@ -144,10 +145,12 @@ class DockerContainerAPI:
 
     def get_stats(self):
         
-        _LOGGER.debug("Get stats for container {} ({})".format(self._name, self._container.id))
+        _LOGGER.debug("Get stats for container {}".format(self._name))
+        
+        stats = {}
+        self._reload_container()
         raw = self._container.stats(stream=False)
 
-        stats = {}
         stats['info'] = self._get_info()
 
         if stats['info']['status'] in ('running', 'paused'):
@@ -165,9 +168,16 @@ class DockerContainerAPI:
         _LOGGER.debug("Stats for container {} ({}): {}".format(self._name, self._container.id, stats))
         return stats
 
+    def _reload_container(self):
+        try:
+            self._container.reload()
+        except Exception as e:
+            self._container = self._client.containers.get(self._name)
+            self._container.reload()
+            self._previous_network = None
+
     def _get_info(self):
         _LOGGER.debug("Loading info for container {}".format(self._name))
-        self._container.reload()
         info = {
             'id': self._container.id,
             'image': self._container.image.tags,

@@ -5,7 +5,7 @@ from datetime import timedelta
 NAME = "Docker Monitor"
 DOMAIN = "docker_monitor"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "0.0.4"
+VERSION = "0.0.5"
 REQUIREMENTS = ['docker==3.7.0', 'python-dateutil==2.7.5']
 
 ISSUE_URL = "https://github.com/guillaumelamirand/docker-monitor/issues"

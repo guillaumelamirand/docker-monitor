@@ -103,6 +103,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
             sensors += [DockerContainerSensor(container_coordinator, platform_name, container_name, monitor_condition)
                          for monitor_condition in config[CONF_MONITORED_CONDITIONS] if monitor_condition in CONTAINER_MONITORED_CONDITIONS]
+        else:
+            _LOGGER.error("Container '{}' not found".format(container_name))
+
 
    
     async_add_entities(sensors)
