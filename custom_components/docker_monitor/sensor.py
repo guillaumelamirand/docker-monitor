@@ -1,6 +1,5 @@
 '''
 Docker Monitor component
-
 '''
 from datetime import timedelta
 import logging
@@ -378,5 +377,3 @@ class DockerContainerSensor(Entity):
     def unit_of_measurement(self):
         """Return the unit the value is expressed in."""
         return self._monitor_condition_unit
-
-        

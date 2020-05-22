@@ -27,6 +27,13 @@ The Docker monitor allows you to monitor statistics and turn on/off containers. 
 2. Enter `guillaumelamirand/docker-monitor` in the **Add Custom Repository** box and select **Integration** from the **Category** list.
 3. On the **Integrations** tab search for "Docker Monitor" and follow the links to install.
 
+#### Installation with HACS
+[HACS](https://github.com/custom-components/hacs) is a custom integration that allows you to search for, discover, install, and manage custom additions to Home Assistant.
+
+1. In the HACS store select the **Settings** tab.
+2. Enter `guillaumelamirand/docker-monitor` in the **Add Custom Repository** box and select **Integration** from the **Category** list.
+3. On the **Integrations** tab search for "Docker Monitor" and follow the links to install.
+
 #### Configuration
 
 To use the `docker_monitor` in your installation, add the following to your `configuration.yaml` file:
