@@ -325,7 +325,7 @@ class DockerContainerSensor(Entity):
         stats = self._coordinator.data
         attributes = {}
         if self._monitor_condition_id in (CONTAINER_MONITOR_STATUS):
-            attributes[ATTR_IMAGE] = stats['info']['image'][0]
+            attributes[ATTR_IMAGE] = stats['info']['image']
             attributes[ATTR_CREATED] = dt_util.as_local(stats['info']['created']).isoformat()
             if stats['info']['status'] in ('running', 'paused'):
                 attributes[ATTR_STARTED_AT] = dt_util.as_local(stats['info']['started_at']).isoformat()

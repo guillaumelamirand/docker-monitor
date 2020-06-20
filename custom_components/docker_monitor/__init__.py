@@ -180,7 +180,7 @@ class DockerContainerAPI:
         _LOGGER.debug("Loading info for container {}".format(self._name))
         info = {
             'id': self._container.id,
-            'image': self._container.image.tags,
+            'image': self._container.image.tags[0] if len(self._container.image.tags) >= 1 else 'unknown',
             'status': self._container.attrs['State']['Status'],
             'created': parser.parse(self._container.attrs['Created']),
             'started_at': parser.parse(self._container.attrs['State']['StartedAt']),
