@@ -59,8 +59,7 @@ async def async_setup(hass: HomeAssistant, config: Config):
     host = config[DOMAIN].get(CONF_URL)
 
     try:
-        docker_api = DockerAPI(hass, host)
-        await hass.async_add_executor_job(docker_api.load_containers)
+        docker_api = await hass.async_add_executor_job(DockerAPI, hass, host)
     except (ImportError, ConnectionError) as e:
         _LOGGER.error("Error setting up Docker API ({})".format(e))
         return False
@@ -96,11 +95,12 @@ class DockerAPI:
 
         try:
             self._client = docker.DockerClient(base_url=self._base_url)
+            self._load_containers()
         except Exception as e:
             _LOGGER.error("Can not connect to Docker ({})".format(e))
             raise ConnectionError()
 
-    def load_containers(self):
+    def _load_containers(self):
         for container in self._client.containers.list(all=True) or []:
             _LOGGER.debug("Found container: {}".format(container.name))
             self._containers[container.name] = DockerContainerAPI(self._hass, self._client, container.name)
