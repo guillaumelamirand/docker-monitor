@@ -6,5 +6,5 @@
   "issue_tracker": ["https://github.com/guillaumelamirand/docker-monitor/issues"],
   "dependencies": [],
   "codeowners": [],
-  "requirements": ["docker>=3.7.0", "python-dateutil>=2.7.5"],
+  "requirements": ["docker>=3.7.0", "python-dateutil>=2.7.5"]
 }
