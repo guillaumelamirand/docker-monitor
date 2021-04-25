@@ -1,9 +1,10 @@
 {
   "domain": "docker_monitor",
   "name": "Docker Monitor",
+  "version": "0.0.8",
   "documentation": "https://github.com/guillaumelamirand/docker-monitor",
   "issue_tracker": ["https://github.com/guillaumelamirand/docker-monitor/issues"],
   "dependencies": [],
   "codeowners": [],
-  "requirements": ["docker>=3.7.0", "python-dateutil>=2.7.5"]
+  "requirements": ["docker>=3.7.0", "python-dateutil>=2.7.5"],
 }
