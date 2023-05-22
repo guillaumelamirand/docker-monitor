@@ -221,7 +221,6 @@ class DockerContainerAPI:
         try:
             memory_stats['usage'] = raw['memory_stats']['usage']
             memory_stats['limit'] = raw['memory_stats']['limit']
-            memory_stats['max_usage'] = raw['memory_stats']['max_usage']
         except (KeyError, TypeError) as e:
             # raw_stats do not have MEM information
             _LOGGER.debug("Cannot grab MEM usage for container {} ({})".format(

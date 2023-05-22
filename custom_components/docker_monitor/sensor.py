@@ -50,7 +50,6 @@ _LOGGER = logging.getLogger(__name__)
 ATTR_CREATED = 'created'
 ATTR_IMAGE = 'image'
 ATTR_MEMORY_LIMIT = 'memory_limit'
-ATTR_MEMORY_MAX_USAGE = 'memory_max_usage'
 ATTR_ONLINE_CPUS = 'online_cpus'
 ATTR_STARTED_AT = 'started_at'
 ATTR_FINISHED_AT = 'finished_at'
@@ -340,9 +339,6 @@ class DockerContainerSensor(Entity):
             limit = stats.get('memory', {}).get('limit')
             if limit is not None:
                 attributes[ATTR_MEMORY_LIMIT] = str(round(limit / (1024 ** 2), 2)) + ' MiB'
-            max_usage = stats.get('memory', {}).get('max_usage')
-            if max_usage is not None:
-                attributes[ATTR_MEMORY_MAX_USAGE] = str(round(max_usage / (1024 ** 2), 2)) + ' MiB'
         return attributes
 
     @property
