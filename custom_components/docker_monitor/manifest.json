@@ -1,7 +1,7 @@
 {
   "domain": "docker_monitor",
   "name": "Docker Monitor",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "documentation": "https://github.com/guillaumelamirand/docker-monitor",
   "issue_tracker": ["https://github.com/guillaumelamirand/docker-monitor/issues"],
   "dependencies": [],
