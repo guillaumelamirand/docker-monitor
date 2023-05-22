@@ -44,16 +44,16 @@ CONTAINER_MONITOR_NETWORK_SPEED_DOWN = 'container_network_speed_down'
 CONTAINER_MONITOR_NETWORK_TOTAL_UP = 'container_network_total_up'
 CONTAINER_MONITOR_NETWORK_TOTAL_DOWN = 'container_network_total_down'
 CONTAINER_MONITORED_CONDITIONS = {
-    CONTAINER_MONITOR_STATUS: ['Status', None, 'mdi:checkbox-marked-circle-outline', None],
-    CONTAINER_MONITOR_UPTIME: ['Up Time', 'minutes', 'mdi:clock', 'timestamp'],
-    CONTAINER_MONITOR_IMAGE: ['Image', None, 'mdi:information-outline', None],
-    CONTAINER_MONITOR_CPU_PERCENTAGE: ['CPU use', '%', 'mdi:chip', None],
-    CONTAINER_MONITOR_MEMORY_USAGE: ['Memory use', 'MiB', 'mdi:memory', None],
-    CONTAINER_MONITOR_MEMORY_PERCENTAGE: ['Memory use (percent)', '%', 'mdi:memory', None],
-    CONTAINER_MONITOR_NETWORK_SPEED_UP: ['Network speed Up', 'kB/s', 'mdi:upload', None],
-    CONTAINER_MONITOR_NETWORK_SPEED_DOWN: ['Network speed Down', 'kB/s', 'mdi:download', None],
-    CONTAINER_MONITOR_NETWORK_TOTAL_UP: ['Network total Up', 'MB', 'mdi:upload', None],
-    CONTAINER_MONITOR_NETWORK_TOTAL_DOWN: ['Network total Down', 'MB', 'mdi:download', None],
+    CONTAINER_MONITOR_STATUS: ['Status', None, 'mdi:checkbox-marked-circle-outline', None, None],
+    CONTAINER_MONITOR_UPTIME: ['Up Time', 'minutes', 'mdi:clock', 'timestamp', None],
+    CONTAINER_MONITOR_IMAGE: ['Image', None, 'mdi:information-outline', None, None],
+    CONTAINER_MONITOR_CPU_PERCENTAGE: ['CPU use', '%', 'mdi:chip', None, 'measurement'],
+    CONTAINER_MONITOR_MEMORY_USAGE: ['Memory use', 'MiB', 'mdi:memory', None, 'measurement'],
+    CONTAINER_MONITOR_MEMORY_PERCENTAGE: ['Memory use (percent)', '%', 'mdi:memory', None, 'measurement'],
+    CONTAINER_MONITOR_NETWORK_SPEED_UP: ['Network speed Up', 'kB/s', 'mdi:upload', None, 'measurement'],
+    CONTAINER_MONITOR_NETWORK_SPEED_DOWN: ['Network speed Down', 'kB/s', 'mdi:download', None, 'measurement'],
+    CONTAINER_MONITOR_NETWORK_TOTAL_UP: ['Network total Up', 'MB', 'mdi:upload', None, 'total_increasing'],
+    CONTAINER_MONITOR_NETWORK_TOTAL_DOWN: ['Network total Down', 'MB', 'mdi:download', None, 'total_increasing'],
 }
 
 DEFAULT_MONITORED_CONDITIONS = \

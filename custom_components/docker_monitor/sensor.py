@@ -147,6 +147,7 @@ class DockerSensor(Entity):
         self._monitor_condition_unit = DOCKER_MONITORED_CONDITIONS[monitor_condition][1]
         self._monitor_condition_icon = DOCKER_MONITORED_CONDITIONS[monitor_condition][2]
         self._monitor_condition_class = DOCKER_MONITORED_CONDITIONS[monitor_condition][3]
+        self._monitor_condition_state_class = DOCKER_MONITORED_CONDITIONS[monitor_condition][4]
 
         _LOGGER.debug("Create sensor for docker with monitor condition: {}".format(monitor_condition))
 
@@ -204,6 +205,11 @@ class DockerSensor(Entity):
     def device_class(self):
         """Return the class of this sensor."""
         return self._monitor_condition_class
+    
+    @property
+    def state_class(self):
+        """Return the state class of this sensor."""
+        return self._monitor_condition_state_class
 
     @property
     def unit_of_measurement(self):
@@ -372,6 +378,11 @@ class DockerContainerSensor(Entity):
         """Return the class of this sensor."""
         return self._monitor_condition_class
 
+    @property
+    def state_class(self):
+        """Return the state class of this sensor."""
+        return self._monitor_condition_state_class
+    
     @property
     def unit_of_measurement(self):
         """Return the unit the value is expressed in."""
